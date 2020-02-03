@@ -1,0 +1,48 @@
+"""
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 1 - Problem 5
+	Due: February 3, 2020
+"""
+
+import time
+
+"""
+This binary search function takes in four parameters.
+These include the array, its first and last elements, and the key the function will search for.
+The search is recursive and will run until all options have been exhausted or the key is found
+"""
+def binarySearch(array, first, last, key):
+    if last >= 1:
+        mid = int(1 +(last - 1) / 2)
+
+        # If the middle of the array is our key then we have successfully found the key
+        if array[mid] == key:
+            return mid
+
+        # If the key is smaller than the middle of the array, the function recursively decreases the search space
+        elif array[mid] > key:
+            return binarySearch(array, first, mid - 1, key)
+
+        else:
+            return binarySearch(array, mid + 1, last, key)
+    else:
+        return -1
+
+# This array stores the sizes that the sequence of arrays will take
+sizes = [128, 512, 2048, 8192, 32768, 131072, 524288, 2097152]
+
+# This for loop runs eight times to match the number of elements in the sizes array
+for i in range(0,8):
+    # This variable will be assigned the same value as the current index of the array sizes
+    size = sizes[i]
+    array = [7] * size
+
+    # This function times the binarySearch function on the current size of the array
+    start = time.time()
+    for j in range(0, 10000000):
+        binarySearch(array, 0, size, 1)
+    stop = time.time()
+
+    end_result = stop - start
+
+    print("Time for size " + str(size) + " is: " + str(end_result) + " seconds")
