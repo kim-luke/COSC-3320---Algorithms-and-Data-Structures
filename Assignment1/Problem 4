@@ -1,0 +1,79 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 1 - Problem 4
+	Due: February 3, 2020
+*/
+
+#include <iostream>
+#include<time.h>
+using namespace std;
+
+/* 
+Takes in a sequence of arrays (parameter int** array) 
+and allocates memory to a given amount that is based on the parameter size
+*/
+void allocate8(int** array, int size) {
+	for (int i = 0; i < size; i++) {
+		array[i] = (int*)malloc(800000 * sizeof(int));
+	}
+}
+
+/* 
+De-allocates memory for a sequence of arrays with the 
+number of arrays based on the parameter size
+*/
+void free_memory(int** array, int size) {
+	for (int i = 0; i < size; i += 2) {
+		free(array[i]);
+	}
+}
+
+/*
+Takes in a sequence of arrays (parameter int** array)
+and allocates memory to  a given amount that is based on the parameter size
+*/
+void allocate10(int** array, int size) {
+	for (int i = 0; i < size; i++) {
+		array[i] = (int*)malloc(1000000 * sizeof(int));
+	}
+}
+
+int main()
+{
+	clock_t start1, end1, start2, end2;
+
+	/* 
+	Through testing many numbers, I've found that my m variable has a size of 1,800,000 
+	array_num1 allocates enough memory for 3 * m (5,400,000) arrays
+	while array_num2 allocates enough memory for just m (1,800,000) arrays
+	*/
+	int** array_num1 = (int**)malloc(5400000 * sizeof(int*));
+	int** array_num2 = (int**)malloc(1800000 * sizeof(int*));
+
+	// Records the start and end time of the function allocate8
+	start1 = clock();
+	allocate8(array_num1, 5400000);
+	end1 = clock();
+
+	// De-allocates array_num1 and frees up the memory used by the 3 * m arrays (5400000)
+	free_memory(array_num1, 5400000);
+
+	start2 = clock();
+	allocate10(array_num2, 1800000);
+	end2 = clock();
+
+	/* 
+	The recorded times are given by first subtracting the recorded start time by 
+	the recorded end time and dividing by CLOCKS_PER_SEC afterwards to yield
+	the final results
+	*/
+	double time1 = (double)(end1 - start1) / CLOCKS_PER_SEC;
+	double time2 = (double)(end2 - start2) / CLOCKS_PER_SEC;
+
+	cout << "First allocation time: " << time1 << " seconds" << endl;
+
+	cout << "Second allocation time: " << time2 << " seconds" << endl;
+
+	system("pause");
+
+}
