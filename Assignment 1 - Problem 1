@@ -1,0 +1,172 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 1 - Problem 1
+	Due: February 3, 2020
+*/
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct node {
+	int diskNum;
+	node* next;
+};
+
+class Stack {
+	node* top;
+public:
+	int size;
+	Stack() { 
+		top = nullptr; 
+		size = 0; 
+	}
+
+	void push(int value) {
+		node* temp = new node;
+		temp->diskNum = value;
+		temp->next = top;
+		top = temp;
+		size++;
+	}
+
+	int pop() {
+		node* temp = new node;
+		int disk = 0;
+		if (!isEmpty()) {
+			temp = top;
+			top = top->next;
+			temp->next = nullptr;
+			disk = temp->diskNum;
+			delete temp;
+			size--;
+		}
+
+		return disk;
+	}
+
+	int peek() {
+		if (isEmpty()) {
+			return top == nullptr;
+		}
+
+		else {
+			top->diskNum;
+		}
+	}
+
+	bool isEmpty() {
+		if (top == nullptr) {
+			return true;
+		}
+
+		return false;
+	}
+
+	void clear() {
+		if (!isEmpty()) {
+			pop();
+		}
+	}
+};
+
+class Node {
+public:
+	string name;
+	Stack pole;
+	Node* next;
+	Node(Node* nodeNext, string nodeName) {
+		next = nodeNext;
+		name = nodeName;
+	}
+};
+
+void move(Node* home, Node* destination) {
+	int disk = home->pole.pop();
+	destination->pole.push(disk);
+	cout << "Move disk #" << disk << " from " << home->name << " to " << destination->name << endl;
+}
+
+void moveAcross(int disks, Node* home) {
+	if (disks == 1) {
+		move(home, home->next);
+		move(home->next, home->next->next);
+	}
+
+	else if (disks > 1) {
+		moveAcross(disks - 1, home);
+		move(home, home->next);
+		moveAcross(disks - 1, home->next->next);
+		move(home->next, home->next->next);
+		moveAcross(disks - 1, home);
+	}
+}
+
+void load(Node* graph[]) {
+	while (!graph[0]->pole.isEmpty()) {
+		if (graph[0]->pole.size == 1) {
+			move(graph[0], graph[1]);
+			move(graph[1], graph[5]);
+		}
+
+		else {
+			move(graph[0], graph[1]);
+			move(graph[1], graph[2]);
+			move(graph[2], graph[3]);
+			moveAcross(graph[4]->pole.size, graph[4]);
+			move(graph[3], graph[4]);
+			moveAcross(graph[2]->pole.size, graph[2]);
+		}
+	}
+}
+
+void unload(Node* graph[]) {
+	while (graph[4]->pole.size != 0) {
+		moveAcross(graph[4]->pole.size - 1, graph[4]);
+		move(graph[4], graph[1]);
+		move(graph[1], graph[5]);
+		moveAcross(graph[2]->pole.size, graph[2]);
+	}
+
+	cout << "Complete game " << graph[5]->pole.size << endl << endl;
+}
+
+void playGame(int disk, Node* graph[]) {
+	cout << "Playing game for " << disk << " disk: " << endl;
+	for (int i = 1; i <= disk; i++) {
+		graph[0]->pole.push(disk - 1);
+	}
+
+	load(graph);
+	unload(graph);
+}
+
+// Driver code
+int main()
+{
+	// 1. Create the nodes of the graph
+	Node* start = new Node(NULL, "Start");
+	Node* node1 = new Node(NULL, "Node 1");
+	Node* node2 = new Node(NULL, "Node 2");
+	Node* node3 = new Node(NULL, "Node 3");
+	Node* node4 = new Node(NULL, "Node 4");
+	Node* dest = new Node(NULL, "destination");
+
+	// 2. Connect the graphs
+	start->next = node1;
+	node1->next = node2;
+	node2->next = node3;
+	node3->next = node4;
+	node4->next = node1;
+
+	// 3. Put the nodes in array to pass the disk to each one easier
+	Node* graph[6] = { start, node1, node2, node3, node4, dest };
+
+	// 4. Start playing the game. With 1-10 disks.
+	for (int i = 1; i < 11; i++) {
+		playGame(i, graph);
+		graph[5]->pole.clear();
+	}
+
+	return 0;
+}
