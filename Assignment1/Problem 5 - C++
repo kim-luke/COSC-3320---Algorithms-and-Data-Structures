@@ -1,0 +1,76 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 1 - Problem 5
+	Due: February 3, 2020
+*/
+
+#include <iostream>
+#include <ctime>
+#include <stdlib.h>
+using namespace std;
+
+/* 
+This binary search function takes in four parameters. 
+These include the array, its first and last elements, and the key the function will search for.
+The search is recursive and will run until all options have been exhausted or the key is found
+*/
+void binarySearch(int array[], int first, int last, int key) {
+
+	// Checks to make sure the array is sorted by comparing first and last elements
+	if (first > last) {		
+		return;
+	}
+
+	int mid = (first + last) / 2;
+
+	// If the middle of the array is our key then we have successfully found the key
+	if (key == array[mid]) {
+		return;
+	}
+
+	// If the key is larger than the middle of the array, the function recursively decreases the search space
+	else if (key > array[mid]) {
+		binarySearch(array, mid + 1, last, key);
+	}
+
+	else {
+		binarySearch(array, first, mid - 1, key);
+	}
+
+}
+
+int main() {
+
+	// This array stores the sizes that the sequence of arrays will take
+	int sizes[8] = { 128, 512, 2048, 8192, 32768, 131072, 524288, 2097152 };
+	clock_t start, stop;
+	int key;
+	double time;
+
+	// Stores a sequence of arrays and allocates enough space for 2,097,152 arrays
+	int *array;
+	array = (int*)malloc(sizeof(int) * 2097152);
+	
+	// This for loop runs eight times to match the number of elements in the sizes array
+	for (int i = 0; i < 8; i++) {
+
+		// This function initializes a specific number of arrays that depends on sizes' current index
+		for (key = 0; key < sizes[i]; key++) {
+			array[key] = key;
+		}
+
+		// This function times the binarySearch function on the current size of the array
+		start = clock();
+		for (int k = 0; k < 10000000; k++) {
+			binarySearch(array, 0, key - 1, key);
+		}
+		stop = clock();
+
+		time = double(stop - start) / double(CLOCKS_PER_SEC);
+
+		cout << "Time for size " << key << " is: " << time << " seconds" << endl;
+	}
+	system("pause");
+	return 0;
+
+}
