@@ -1,1 +1,44 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 2 - Problem 1
+	Due: April 1, 2020
+*/
 
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+#include <ctime>
+using namespace std;
+
+int generateNumbers() {
+    int randNumber = rand() % 100;
+    
+    return randNumber;
+}
+
+int main() {
+
+    srand(time(nullptr));
+
+    int sizes[10] = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
+
+    for (int a = 0; a < 10; a++) {
+        int A[sizes[a]];
+
+        for (int d = 0; d < sizes[a]; d++) {
+            A[d] = generateNumbers();
+            cout << "Current index of A: " << d << " and the current value: " << A[d] << endl;
+        }   
+    }
+
+    for (int b = 0; b < 10; b++) {
+        int B[sizes[b]];
+
+        for (int e = 0; e < sizes[b]; e++) {
+            B[e] = generateNumbers();
+            cout << "Current index of B: " << e << " and the current value: " << B[e] << endl;
+        }   
+    }
+
+    return 0;
+}
