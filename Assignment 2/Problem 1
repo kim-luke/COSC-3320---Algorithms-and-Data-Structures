@@ -23,20 +23,26 @@ int main() {
     int sizes[10] = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
 
     for (int a = 0; a < 10; a++) {
-        int A[sizes[a]];
+        int size = sizes[a];
+        int A[size][size];
 
         for (int d = 0; d < sizes[a]; d++) {
-            A[d] = generateNumbers();
-            cout << "Current index of A: " << d << " and the current value: " << A[d] << endl;
+            for (int f = 0; f < sizes[a]; f++) {
+                A[d][f] = generateNumbers();
+                //cout << "Current index of A: [" << d << "]" << "[" << f << "]" << " and the current value: " << A[d][f] << endl;
+            }
         }   
     }
 
     for (int b = 0; b < 10; b++) {
-        int B[sizes[b]];
+        int size = sizes[b];
+        int B[size][size];
 
         for (int e = 0; e < sizes[b]; e++) {
-            B[e] = generateNumbers();
-            cout << "Current index of B: " << e << " and the current value: " << B[e] << endl;
+            for (int g = 0; g < sizes[b]; g++) {
+                B[e][g] = generateNumbers();
+                //cout << "Current index of B: [" << e << "]" << "[" << g << "]" << " and the current value: " << B[e][g] << endl;
+            }
         }   
     }
 
