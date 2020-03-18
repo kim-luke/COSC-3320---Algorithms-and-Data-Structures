@@ -21,29 +21,52 @@ int main() {
     srand(time(nullptr));
 
     int sizes[10] = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
+    clock_t start, stop;
+    double time = 0;
 
     for (int a = 0; a < 10; a++) {
         int size = sizes[a];
-        int A[size][size];
 
-        for (int d = 0; d < sizes[a]; d++) {
-            for (int f = 0; f < sizes[a]; f++) {
-                A[d][f] = generateNumbers();
-                //cout << "Current index of A: [" << d << "]" << "[" << f << "]" << " and the current value: " << A[d][f] << endl;
+        int** A = new int*[size];
+        int** B = new int*[size];
+        int** C = new int*[size];
+
+        for (int z = 0; z < size; z++) {
+            A[z] = new int[sizes[a]];
+            B[z] = new int[sizes[a]];
+            C[z] = new int[sizes[a]];
+        }
+
+        for (int b = 0; b < size; b++) {
+            for (int c = 0; c < size; c++) {
+                A[b][c] = generateNumbers();
+                B[b][c] = generateNumbers();     
             }
-        }   
-    }
+        }
 
-    for (int b = 0; b < 10; b++) {
-        int size = sizes[b];
-        int B[size][size];
-
-        for (int e = 0; e < sizes[b]; e++) {
-            for (int g = 0; g < sizes[b]; g++) {
-                B[e][g] = generateNumbers();
-                //cout << "Current index of B: [" << e << "]" << "[" << g << "]" << " and the current value: " << B[e][g] << endl;
+        start = clock();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                C[i][j] = A[i][j] + B[i][j];
             }
-        }   
+        }
+
+        stop = clock();
+
+        time = double(stop - start) / double(CLOCKS_PER_SEC);
+        cout << "Time for Version 1 and size " << size << " is " << time << " seconds" << endl;
+
+        start = clock();
+
+        for (int j = 1; j < size; j++) {
+            for (int i = 1; i < size; i++) {
+                C[i][j] = A[i][j] + B[i][j];
+            }
+        }
+        stop = clock();
+
+        time = double(stop - start) / double(CLOCKS_PER_SEC);
+        cout << "Time for Version 2 and size: " << size << " is " << time << " seconds" << endl;
     }
 
     return 0;
