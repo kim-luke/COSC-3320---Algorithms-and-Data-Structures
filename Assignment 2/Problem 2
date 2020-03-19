@@ -11,18 +11,18 @@ using namespace std;
 
 int main() {
 
-    int n[] = {16, 64, 256, 1024, 4096, 16384};
+    int n[6] = {16, 64, 256, 1024, 4096, 16384};
 
-    long long int m1 = 1677721600;
-    long long int m2 = 13421772800;
+    size_t m1 = 1677721600;
+    size_t m2 = 13421772800;
     clock_t start, stop;
-
-    int a, b, x;
 
     int next = 0;
     double time = 0;
 
     while (next < 6) {
+        int a, b, x;
+
         int** array = new int*[n[next]];
 
         for (int i = 0; i < n[next]; i++) {
@@ -58,7 +58,7 @@ int main() {
 
         time = double(stop - start) / double(CLOCKS_PER_SEC); 
         cout << "The time for size " << n[next] << " with m value of " << m2 << " is " << time << " seconds." << endl;
-
+        
         next++;
     }
 
