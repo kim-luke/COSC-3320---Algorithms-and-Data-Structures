@@ -1,1 +1,57 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 2 - Problem 4
+	Due: April 1, 2020
+*/
 
+#include<iostream>
+#include<time.h>
+#include<fstream>
+#include<windows.h>
+#include<winbase.h>
+using namespace std;
+int main()
+{
+	int size;
+	fstream f;
+	f.open("output.txt", ios::out);
+	clock_t startTime;
+	long int freeBytes;
+	int freePage;
+	int freeVirtual;
+
+	MEMORYSTATUS MemoryInfo;
+	GlobalMemoryStatus(&MemoryInfo);
+	freeBytes = MemoryInfo.dwAvailPhys;
+	freePage = MemoryInfo.dwAvailPageFile;
+	freeVirtual = MemoryInfo.dwAvailVirtual;
+
+	cout << "Available Physical Memory: " << MemoryInfo.dwAvailPhys << endl;
+	cout << "Available Page File: " << MemoryInfo.dwAvailPageFile << endl;
+	cout << "Available Virtual Memory: " << MemoryInfo.dwAvailVirtual << endl;
+	f << "Avaiable Physical Memory: " << MemoryInfo.dwAvailPhys << endl;
+	f << "Available Page File: " << MemoryInfo.dwAvailPageFile << endl;
+	f << "Available Virtual Memory: " << MemoryInfo.dwAvailVirtual << endl;
+
+	double Cache_size[15] = { 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 1.0, 1.01, 1.1, 1.5 , 2, 5, 10, 50 };
+
+	for (int i = 0; i < 15; i++)
+	{
+		cout << "--------------------\n\n";
+		cout << "Cache Size: " << Cache_size[i] << "*M\n";
+		f << "--------------------\n\n";
+		f << " Cache Size: " << Cache_size[i] << "*M\n";
+		startTime = clock();
+		GlobalMemoryStatus(&MemoryInfo);
+		cout << "Available Physical Memory: " << MemoryInfo.dwAvailPhys << endl;
+		cout << "Available Page File: " << MemoryInfo.dwAvailPageFile << endl;
+		cout << "Available Virtual Memory: " << MemoryInfo.dwAvailVirtual << endl;
+		f << "Avaiable Physical Memory: " << MemoryInfo.dwAvailPhys << endl;
+		f << "Available Page File: " << MemoryInfo.dwAvailPageFile << endl;
+		f << "Available Virtual Memory: " << MemoryInfo.dwAvailVirtual << endl;
+		cout << "Time elapsed: " << ((double)(clock() - startTime) / (double)CLOCKS_PER_SEC) << " seconds " << endl;
+		f << "Time elapsed: " << ((double)(clock() - startTime) / (double)CLOCKS_PER_SEC) << " seconds " << endl;
+	}
+	system("pause");
+	return 0;
+}
