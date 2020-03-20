@@ -70,7 +70,7 @@ int main() {
 
         time = double(stop - start) / double(CLOCKS_PER_SEC);
         cout << "Time for Version 2 and size: " << size << " is " << time << " seconds" << endl;
-        cout << "===========================================" << endl;
+        cout << endl;
     }
 
     return 0;
