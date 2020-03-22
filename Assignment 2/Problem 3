@@ -1,1 +1,300 @@
+/*
+	Luke Kim - 1478875
+	COSC 3320: Algorithms and Data Structures – Assignment 2 - Problem 3
+	Due: April 1, 2020
+*/
 
+#include <iostream>
+#include <string>
+#include <cmath>
+using namespace std;
+
+class AVL {
+private:
+    int nodeCount = 0;
+    int insertCount = 0;
+    int deleteCount = 0;
+    int size0 = pow(2,20);
+    int size1 = pow(2,19) + pow(2,18);
+    int size2 = pow(2,18) + pow(2,17);
+
+    struct node {
+        node* left;
+        node* right;
+        int* matrix;
+        int height;
+        int data;
+    };
+
+    node* root;
+
+    int height(node* temp) {
+        return (temp == nullptr ? -1 : temp->height);
+    }
+
+    int getBalance(node* temp) {
+
+        if (temp == nullptr) {
+            return 0;
+        }
+
+        else {
+            return height(temp->left) - height(temp->right);
+        }
+    }
+
+    void inOrder(node* temp) {
+
+        if (temp == nullptr) {
+            return;
+        }
+
+        inOrder(temp->left);
+        cout << temp->data << " ";
+        inOrder(temp->right);
+    }
+
+    node* singleRightRotate(node* &temp) {
+
+        if (temp == nullptr || temp->left == nullptr) {
+            return temp;
+        }
+
+        else {
+            node* x = temp->left;
+            temp->left = x->right;
+            x->right = temp;
+            temp->height = max(height(temp->left), height(temp->right)) + 1;
+            x->height = max(height(x->left), temp->height) + 1;
+            return x;
+        }
+
+        return temp;
+    }
+
+    node* singleLeftRotate(node* &temp) {
+
+        if (temp == nullptr || temp->right == nullptr) {
+            return temp;
+        }
+
+        else {
+            node* x = temp->right;
+            temp->right = x->left;
+            x->left = temp;
+            temp->height = max(height(temp->left), height(temp->right)) + 1;
+            x->height = max(height(temp->right), temp->height) + 1;
+            return x;
+        }
+
+        return temp;
+    }
+
+    node* doubleLeftRotate(node* &temp) {
+        temp->right = singleRightRotate(temp->right);
+        return singleLeftRotate(temp);
+    }
+
+    node* doubleRightRotate(node* &temp) {
+        temp->left = singleLeftRotate(temp->left);
+        return singleRightRotate(temp);
+    }
+
+    node* findMin(node* temp) {
+
+        if (temp == nullptr) {
+            return nullptr;
+        }
+
+        else if (temp->left == nullptr) {
+            return temp;
+        }
+
+        else {
+            return findMin(temp->left);
+        }   
+    }
+
+    node* findMax(node* temp) {
+
+        if (temp == nullptr) {
+            return nullptr;
+        }
+
+        else if (temp->right == nullptr) {
+            return temp;
+        }
+
+        else {
+            return findMax(temp->right);
+        }
+    }
+
+    node* insert(int value, node* temp) {
+        int remainder = value % 3;
+
+        if (temp == nullptr) {
+            insertCount++;
+            temp = new node;
+            temp->data = value;
+            nodeCount++;
+            temp->height = 0;
+            temp->left = temp->right = nullptr;
+            
+            if (remainder == 0) {
+                temp->matrix = new int[size0];
+            }
+
+            else if (remainder == 1) {
+                temp->matrix = new int[size1];
+            }
+
+            else {
+                temp->matrix = new int[size2];
+            }
+        }
+
+        else if (value < temp->data) {
+            temp->left = insert(value, temp->left);
+
+            if (height(temp->left) - height(temp->right) == 2) {
+
+                if (value < temp->left->data) {
+                    temp = singleRightRotate(temp);
+                }
+
+                else {
+                    temp = doubleRightRotate(temp);
+                }
+            }
+        }
+
+        else if (value > temp->data) {
+            temp->right = insert(value, temp->right);
+
+            if (height(temp->right) - height(temp->left) == 2) {
+
+                if (value > temp->right->data) {
+                    temp = singleLeftRotate(temp);
+                }
+
+                else {
+                    temp = doubleLeftRotate(temp);
+                }
+            }
+        }
+
+        temp->height = max(height(temp->left), height(temp->right)) + 1;
+        return temp;
+    }
+
+    node* remove(int value, node* t) {
+        node* temp;
+
+        if (t == nullptr) {
+            return nullptr;
+        }
+
+        else if (value < t->data) {
+            t->left = remove(value, t->left);
+        }
+
+        else if (value > t->data) {
+            t->right = remove(value, t->right);
+        }
+
+        else if (t->left && t->right) {
+            temp = findMin(t->right);
+            t->data = temp->data;
+            t->right = remove(t->data, t->right);
+        }
+
+        else {
+            temp = t;
+
+            if (t->left == nullptr) {
+                t = t->right;
+            }
+
+            else if (t->right == nullptr) {
+                t = t->left;
+            }
+
+            delete[] temp->matrix;
+            delete temp;
+            deleteCount++;
+            nodeCount--;
+        }
+
+        if (t == nullptr) {
+            return t;
+        }
+
+        t->height = max(height(t->left), height(t->right)) + 1;
+
+        if (height(t->left) - height(t->right) == 2) {
+
+            if (height(t->left->left) - height(t->left->right) == 1) {
+                return singleLeftRotate(t);
+            }
+
+            else {
+                return doubleLeftRotate(t);
+            }
+        }
+
+        else if (height(t->right) - height(t->left) == 2) {
+
+            if (height(t->right->right) - height(t->right->left) == 1) {
+                return singleRightRotate(t);
+            }
+
+            else {
+                return doubleRightRotate(t);
+            }
+        }
+        return t;
+    }
+
+public:
+    AVL() {
+        root = nullptr;
+    }
+
+    void insert(int value) {
+        root = insert(value, root);
+    }
+
+    void remove(int value) {
+        root = remove(value, root);
+    }
+
+    void display() {
+        inOrder(root);
+        cout << endl;
+    }
+
+    int getNodes() {
+        return nodeCount;
+    }
+
+    int getInsert() {
+        return insertCount;
+    }
+
+    int getDelete() {
+        return deleteCount;
+    }
+
+    void setCount() {
+        insertCount = 0; 
+    }
+
+};
+
+int main() {
+
+    cout << "testing" << endl;
+
+    return 0;
+}
