@@ -349,8 +349,7 @@ int main() {
     }
     cout << "Average Initial Insertion time: " << setprecision(5) << initialInsert / 50.00 << " milliseconds." << endl;
     cout << "Average Insertion time: " << setprecision(5) << insertion / node.getInsert() << " milliseconds." << endl;
-    cout << "Average Deletion time: " << setprecision(5) << deletion / node.getDelete() << " milliseconds." << endl;
-    
+    cout << "Average Deletion time: " << setprecision(5) << deletion / node.getDelete() << " milliseconds." << endl;  
 
     return 0;
 }
